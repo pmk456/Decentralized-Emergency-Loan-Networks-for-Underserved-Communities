@@ -3,10 +3,11 @@ Author: Patan Musthakheem
 Date & Time: 05-04-2024
 """
 from flask import Blueprint, render_template, request, session, redirect
-from flask import url_for
+from flask import url_for, flash
 
 from .. import otp, db
-
+from ..models import Lender, Borrower, OTP
+from .. import create_app
 
 home_routes = Blueprint('home_routes', __name__)  
 
@@ -43,36 +44,49 @@ def lender_signup():
         lender_data = dict()
         lender_data['name'] = request.form.get("lender-name")
         lender_data['phone_no'] = request.form.get("lender-phone")
-        # TODO CHECK Whether already this phone no exists in db
+        # TODO Check Whether already this phone no exists in db
         
-        
+        if Lender.query.get(lender_data['phone_no']):
+            flash("Phone already exists.", "error")
+            return redirect(url_for("home_routes.lender-signup"))
         
         lender_data['dob'] = request.form.get("lender-dob")
         lender_data['aadhar'] = request.form.get('lender-aadhar')
-        # TODO: Generate otp and verify it
+        # Writing to the database
+        app = create_app()
+        with app.app_context as context:
+            new_lender = Lender(
+                name=db['name'],
+                phone_number=db['phone_no'],
+                aadhar=db['aadhar'],
+                trust_score=50
+            )
+
+            db.session.add(new_lender)
+            db.session.commit()
+        
+        # TODO: Generate otp and verify it ---> DONE
         otp_handler = otp.OtpHandler()
-        otp_data = otp_handler.send_otp(lender_data['phone_no'])
-        db.write_otp(lender_data['phone_no'], otp_data)
+        otp_handler.send_otp(lender_data['phone_no'])
+        session["PHONE_NO"] = lender_data["phone_no"]
         return render_template("auth/verify-otp.html")
     
     return render_template("lender/signup.html")
 
 
-from flask import flash
 
-@home_routes.route("/verify-otp", methods=["POST"])
+@home_routes.route("/signup/verify-otp", methods=["POST"])
 def verify_otp():
     user_otp = request.form.get("otp")
-
     if not session.get("PHONE_NO") or not user_otp:
         flash("Session expired or OTP missing. Please try again.", "error")
-        return redirect(url_for("home_routes.lender_signup"))
+        return redirect(url_for("home_routes.lender-signup"))
+    handler = otp.OtpHandler()
+    validate = handler.validate_otp(session['PHONE_NO'], user_otp)
 
-    stored_otp = db.get_otp(session['PHONE_NO'])
-
-    if stored_otp == user_otp:
+    if validate:
         flash("OTP verified successfully!", "success")
-        return redirect(url_for("home_routes.lender_dashboard"))  # You can change this route as needed
+        return redirect(url_for("home_routes.lender_dashboard")) 
     else:
         flash("Incorrect OTP. Please try again.", "error")
-        return redirect(url_for("home_routes.verify_otp_form"))  # Make sure this route exists
+        return redirect(url_for("home_routes.verify-otp")) 
