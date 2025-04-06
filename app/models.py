@@ -8,13 +8,13 @@ import datetime
 class Lender(db.Model):    
     phone_number = db.Column(db.String, primary_key=True)
     name = db.Column(db.String(100))
+    # dob = db.Column(db.String(100))
     aadhar = db.Column(db.String(100))
     trust_score = db.Column(db.String(10))
     
 class Borrower(db.Model):
     phone_number = db.Column(db.String, primary_key=True)
     name = db.Column(db.String(100))
-    email = db.Column(db.String(100))
     trust_score = db.Column(db.Float)
     kyc_status = db.Column(db.Boolean)
 
@@ -42,3 +42,7 @@ class OTP(db.Model):
     phone_number = db.Column(db.String, primary_key=True)
     otp_code = db.Column(db.String(6))
     timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    
+    
+if __name__ == "__main__":
+    db.create_all()
