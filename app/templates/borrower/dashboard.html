@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Borrower Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f8;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #007BFF;
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .sidebar .nav-link {
+            display: block;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: #0056b3;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1 1 250px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .card p {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007BFF;
+        }
+
+        .score-history {
+            margin-top: 20px;
+        }
+
+        .score-history table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .score-history th,
+        .score-history td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .score-history th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #d0e3ff;
+            border-left: 5px solid #2196f3;
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin: 30px auto;
+            max-width: 420px;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #0d47a1;
+            font-size: 22px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e3f2fd;
+            padding-bottom: 8px;
+        }
+
+        .card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .card li {
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            background-color: #f1f8ff;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .card li:hover {
+            background-color: #e3f2fd;
+            transform: translateX(5px);
+        }
+
+        .card li strong {
+            color: #1976d2;
+            font-weight: 600;
+        }
+
+        /* Input Styling */
+        input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 8px;
+            border: 1px solid #b3d7ff;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #f9fcff;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #2196f3;
+            box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+            outline: none;
+        }
+
+        /* Button Styling */
+        button {
+            background-color: #2196f3;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #1976d2;
+            transform: scale(1.03);
+        }
+
+        /* Loan Result Card Styling (inherits from .card) */
+        .card.message {
+            margin-top: 20px;
+            background-color: #e3f2fd;
+            border-left-color: #1976d2;
+            color: #0d47a1;
+            font-size: 16px;
+        }
+
+
+
+
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                display: flex;
+                overflow-x: auto;
+                padding: 10px;
+            }
+
+            .sidebar h2 {
+                display: none;
+            }
+
+            .sidebar .nav-link {
+                flex: 1;
+                text-align: center;
+                margin: 0 5px;
+                padding: 10px;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>Borrower Dashboard</h2>
+        <div class="nav-link active" onclick="showSection('dashboard')">Dashboard</div>
+        <div class="nav-link" onclick="showSection('loanStatus')">Loan Status</div>
+        <div class="nav-link" onclick="showSection('repayment')">EMI & Repayments</div>
+        <div class="nav-link" onclick="showSection('history')">Loan History</div>
+        <div class="nav-link" onclick="showSection('trust')">Trust Score</div>
+        <div class="nav-link" onclick="showSection('profile')">Profile</div>
+        <div class="nav-link" onclick="showSection('applyLoan')">Apply for New Loan</div>
+    </div>
+
+    <div class="main-content">
+        <!-- Dashboard -->
+        <div id="dashboard" class="section active">
+            <h2>Welcome Back, Borrower</h2>
+            <div class="cards">
+                <div class="card">
+                    <h3>Outstanding Loan</h3>
+                    <p>Rs.25,000</p>
+                </div>
+                <div class="card">
+                    <h3>Next EMI Due</h3>
+                    <p>Rs.2,500</p>
+                </div>
+                <div class="card">
+                    <h3>Total Paid</h3>
+                    <p>Rs.12,500</p>
+                </div>
+                <div class="card">
+                    <h3>Loan Application Status</h3>
+                    <p>Approved</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Status -->
+        <div id="loanStatus" class="section">
+            <h2>Loan Status</h2>
+            <p>Your current loan is active with regular repayments. Details of repayment schedule and penalties are
+                listed here.</p>
+        </div>
+
+        <!-- Repayments -->
+        <div id="repayment" class="section">
+            <h2>EMI & Repayments</h2>
+            <p>Manage and view your monthly EMI schedule, due dates, and auto-debit setup.</p>
+        </div>
+
+        <!-- Loan History -->
+        <div id="history" class="section">
+            <h2>Loan History</h2>
+            <p>Track all your past loans including status, disbursal, and repayment performance.</p>
+        </div>
+
+        <!-- Trust Score -->
+        <div id="trust" class="section">
+            <h2>Trust Score</h2>
+            <div class="card" style="max-width: 300px;">
+                <h3>Current Trust Score</h3>
+                <p>82 / 100</p>
+            </div>
+            <div class="score-history">
+                <h3>Score History</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Action</th>
+                            <th>Reason</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2025-04-02</td>
+                            <td>Added</td>
+                            <td>Early EMI payment</td>
+                            <td>+5</td>
+                        </tr>
+                        <tr>
+                            <td>2025-03-22</td>
+                            <td>Deducted</td>
+                            <td>Late fee</td>
+                            <td>-4</td>
+                        </tr>
+                        <tr>
+                            <td>2025-03-10</td>
+                            <td>Added</td>
+                            <td>Profile verified</td>
+                            <td>+3</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Profile -->
+        <div id="profile" class="section">
+            <h2>Profile</h2>
+            <p>Update your contact information, upload verification documents, and manage bank details securely.</p>
+        </div>
+
+        <!-- Apply for New Loan -->
+        <div id="applyLoan" class="section">
+            <h2>Apply for New Loan</h2>
+
+            <div class="card">
+                <h3>Eligibility Rules:</h3>
+                <ul>
+                    <li><strong>&lt; 50</strong>: Not eligible</li>
+                    <li><strong>50–59</strong>: ₹100 – ₹200</li>
+                    <li><strong>60–69</strong>: ₹200 – ₹500</li>
+                    <li><strong>70–79</strong>: ₹500 – ₹1,000</li>
+                    <li><strong>80+</strong>: ₹1,000 – ₹5,000</li>
+                </ul>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <label for="loanAmount">Enter Loan Amount (Rs.):</label><br />
+                <input type="number" id="loanAmount" placeholder="e.g. 1500" />
+            </div>
+
+            <button onclick="applyForLoan()">Submit Loan Request</button>
+
+            <div id="loanApplicationResult" class="card message" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function getLoanRange(score) {
+            if (score < 50) return null;
+            if (score < 60) return [100, 200];
+            if (score < 70) return [100, 500];
+            if (score < 80) return [100, 1000];
+            return [100, 5000];
+        }
+
+        function applyForLoan() {
+            const trustScore = 82; // Dynamic later
+            const activeLoan = false;
+            const amount = Number(document.getElementById('loanAmount').value);
+            const resultDiv = document.getElementById('loanApplicationResult');
+
+            resultDiv.style.display = 'none';
+            resultDiv.className = "card message";
+
+            if (isNaN(amount) || amount <= 0) {
+                resultDiv.textContent = "❌ Please enter a valid loan amount.";
+                resultDiv.classList.add("error");
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            if (trustScore < 50) {
+                resultDiv.textContent = "❌ You are not eligible to apply for a loan. Trust score below 50.";
+                resultDiv.classList.add("error");
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            if (activeLoan) {
+                resultDiv.textContent = "❌ You already have an active unpaid loan.";
+                resultDiv.classList.add("error");
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            const range = getLoanRange(trustScore);
+            if (!range || amount < range[0] || amount > range[1]) {
+                resultDiv.textContent = `❌ Based on your trust score (${trustScore}), you can apply for a loan between ₹${range[0]} and ₹${range[1]}.`;
+                resultDiv.classList.add("error");
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            const now = new Date();
+            const requestId = 'REQ-' + now.getFullYear().toString().slice(2) +
+                (now.getMonth() + 1).toString().padStart(2, '0') +
+                now.getDate().toString().padStart(2, '0') +
+                '-' + Math.floor(1000 + Math.random() * 9000);
+
+            resultDiv.innerHTML = `<strong>✅ Loan Request Submitted Successfully!</strong><br>
+        <strong>Loan Request ID:</strong> ${requestId}<br>
+        <strong>Amount:</strong> ₹${amount.toLocaleString()}<br>
+        <strong>Status:</strong> Pending Approval`;
+            resultDiv.classList.add("success");
+            resultDiv.style.display = 'block';
+
+            document.getElementById('loanAmount').value = '';
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/css/lender.css">
+</head>
+
+<body>
+    <div class="logo-section">
+        <img src="/static/images/au png.jpg" class="card-img1" alt="...">
+        <h1 class="top-head">TrustPay</h1>
+        <img src="/static/images/trust-removebg-preview.png" class="card-img2" alt="...">
+    </div>
+    <!-- <h1>Admins Login Form</h1> -->
+
+    <div class="wrap-bg">
+        <div class="wrapper">
+            <div class="content">
+                <span class="icon-close"><ion-icon name="close-outline" onclick="goToHomePage()" ion-icon></span>
+                <div class="form-box login">
+                    <h2>Login</h2>
+                    <form action="#" method="post">
+                        <div class="input-box">
+                            <span class="icon"><ion-icon name="call-outline"></ion-icon></span>
+                            <input type="text" name="username" required />
+                            <label>Phone Number</label>
+                        </div>
+                        <div class="input-box">
+                            <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                            <input type="password" name="password" required />
+                            <label>Password</label>
+                        </div>
+                        
+                        <button type="submit" id="loginForm" class="btn">Login</button>
+
+                        <div style="margin-top:20px;color:white;display:flex;justify-content:center;">
+                            <label>New User?&nbsp&nbsp</label>
+                            <a href="/lender-signup" style="color:white;font-weight: bold;">Signup</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script src="/static/js/script.js"></script>
+
+
+</html>

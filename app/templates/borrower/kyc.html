@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/css/kyc.css">
+</head>
+
+<body>
+    <div class="logo-bg" style="display: flex; justify-content: center; width: 100%;">
+        <div class="logo-section">
+            <img src="/static/images/au png.jpg" class="card-img1" alt="...">
+            <h1 class="top-head">TrustPay</h1>
+            <img src="/static/images/trust-removebg-preview.png" class="card-img2" alt="...">
+        </div>
+    </div>
+    <div class="wrap-bg">
+        <div class="wrapper">
+            <div class="content">
+                <span class="icon-close"><ion-icon name="close-outline" onclick="goToHomePage()" ion-icon></span>
+                <div class="form-box login">
+                    <h2>Complete KYC</h2>
+                    <form action="/borrower-signup/kyc-verification" method="POST">
+                        <div class="input-box">
+                            <span class="icon"><ion-icon name="person-circle-outline"></ion-icon></span>
+                            <input type="text" name="username" required />
+                            <label>Name </label>
+                            <label>Name as per aadhar</label>
+                        </div>
+
+                        <div class="input-box">
+                            <span class="icon"><ion-icon name="call-outline"></ion-icon></span>
+                            <input type="text" name="username" required />
+                            <label>Ph.No</label>
+                        </div>
+
+                        <label for="dob" style="color: white;">Date of Birth :</label>
+                        <input type="date" id="dob" name="dob">
+
+                        <div class="input-box">
+                            <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+                            <input type="text" name="username" required />
+                            <label>Aadhar No.</label>
+                        </div>
+
+
+                        <label for="idproof" style="color: white;">Upload ID Proof</label>
+                        <input type="file" id="idproof" name="idproof" accept=".jpg, .png, .pdf" required>
+                        <br>
+                        <br>
+
+                        <button type="button" class="allow" onclick="getLocation()">Allow Location</button>
+                        <br>
+                        <div id="locationDisplay">Location: Not granted yet</div>
+                        <br>
+
+                        <button type="submit" id="loginForm" class="btn" onclick="">Submit</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    document.getElementById("locationDisplay").innerText =
+                        "Location: " + position.coords.latitude.toFixed(5) + ", " + position.coords.longitude.toFixed(5);
+                },
+                function (error) {
+                    document.getElementById("locationDisplay").innerText =
+                        "Error getting location: " + error.message;
+                }
+            );
+        } else {
+            document.getElementById("locationDisplay").innerText =
+                "Geolocation is not supported by this browser.";
+        }
+    }
+
+</script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script src="/static/js/script.js"></script>
+
+</html>
