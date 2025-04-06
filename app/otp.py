@@ -1,63 +1,43 @@
 """
 Author: Patan Musthakheem
 Date & Time: 05-04-2024
+Updated to use Twilio Verify API
 """
-import random
-import os
-import requests
 
-from .models import OTP
-from app import db, create_app
-API_KEY = os.getenv("TWO_FACTOR_API_KEY")  
-SENDER_ID = "TXTIND"
+import os
+from twilio.rest import Client
+
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+VERIFY_SERVICE_SID = os.getenv("TWILIO_VERIFY_SERVICE_SID")
 
 class OtpHandler:
     def __init__(self):
-        app = create_app()
-        with app.app_context() as context:
-            db.session.query(OTP).delete()
-            db.session.commit()
-            print("Reset OTP Codes!")
-    
-    def _generate_otp(self):
-        return str(random.randint(100000, 999999))
+        self.client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        print("Twilio Verify Client initialized!")
 
-    def send_otp(self, number: str):
-        otp = self._generate_otp()
-        self._send(otp, number)
-        self._write_otp(number, otp)
+    def send_otp(self, phone_number: str):
+        """ Sends OTP to the user's phone via Twilio Verify """
+        try:
+            verification = self.client.verify.v2.services(VERIFY_SERVICE_SID) \
+                .verifications \
+                .create(to=phone_number, channel='sms')
+            print(f"OTP sent to {phone_number}, Status: {verification.status}")
+        except Exception as e:
+            print(f"Error sending OTP: {e}")
 
-    def _send(self, otp, number):
-        url = f"https://2factor.in/API/V1/{API_KEY}/SMS/{number}/{otp}/{SENDER_ID}"
-        requests.get(url)
-
-    def _write_otp(self, number, otp):
-        """ Write the OTP to the database """
-        app = create_app()
-        with app.app_context():
-            otp_entry = OTP(phone_number=number, otp_code=otp)
-            db.session.add(otp_entry)
-            db.session.commit()
-
-    def validate_otp(self, phone_no, entered_otp):
-        """ Fetch OTP from db and compare here"""
-        app = create_app()
-        with app.app_context():
-            latest_otp = OTP.query.filter_by(phone_number=phone_no).order_by(OTP.timestamp.desc()).first()
-            if latest_otp is not None:
-                if latest_otp.otp_code == entered_otp:
-                    self._remove_otp(phone_no)
-                    return True
-        return False
-            
-    def _remove_otp(self, number):
-        """ Remove OTP from database after successful verification """
-        app = create_app()
-        with app.app_context():
-            otp_entry = OTP.query.filter_by(phone_number=number).first()
-            if otp_entry:
-                db.session.delete(otp_entry)
-                db.session.commit()
-                print(f"OTP for phone number {number} removed from the database.")
+    def validate_otp(self, phone_number: str, otp: str):
+        """ Validates entered OTP using Twilio Verify """
+        try:
+            verification_check = self.client.verify.v2.services(VERIFY_SERVICE_SID) \
+                .verification_checks \
+                .create(to=phone_number, code=otp)
+            if verification_check.status == "approved":
+                print(f"OTP verified for {phone_number}")
+                return True
             else:
-                print(f"No OTP found for phone number {number}.")
+                print(f"Invalid OTP for {phone_number}")
+                return False
+        except Exception as e:
+            # print(f"Error verifying OTP: {e}")
+            return False
