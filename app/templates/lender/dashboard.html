@@ -4,188 +4,44 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Lender Dashboard</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #f4f6f8;
-            color: #333;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: #007BFF;
-            color: white;
-            padding: 30px 20px;
-        }
-
-        .sidebar h2 {
-            margin-bottom: 30px;
-            font-size: 24px;
-        }
-
-        .sidebar .nav-link {
-            display: block;
-            margin-bottom: 15px;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background-color: #0056b3;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        .cards {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            flex: 1 1 250px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            font-size: 16px;
-            margin-bottom: 10px;
-            color: #555;
-        }
-
-        .card p {
-            font-size: 24px;
-            font-weight: bold;
-            color: #007BFF;
-        }
-
-        .extras h3 {
-            margin-bottom: 15px;
-        }
-
-        .extras ul {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
-
-        .extras li {
-            margin-bottom: 8px;
-        }
-
-        .score-history {
-            margin-top: 20px;
-        }
-
-        .score-history table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .score-history th,
-        .score-history td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-
-        .score-history th {
-            background-color: #007BFF;
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                display: flex;
-                overflow-x: auto;
-                padding: 10px;
-            }
-
-            .sidebar h2 {
-                display: none;
-            }
-
-            .sidebar .nav-link {
-                flex: 1;
-                text-align: center;
-                margin: 0 5px;
-                padding: 10px;
-                white-space: nowrap;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/lender-dashboard.css">
 </head>
 
 <body>
-
     <div class="sidebar">
-        <h2>Lender Dashboard</h2>
+        <h2>{{ user_data['name'] }} Dashboard</h2>
         <div class="nav-link active" onclick="showSection('dashboard')">Dashboard</div>
         <div class="nav-link" onclick="showSection('loans')">Loan Status</div>
         <div class="nav-link" onclick="showSection('wallet')">Wallet</div>
         <div class="nav-link" onclick="showSection('investments')">Investments</div>
-        <div class="nav-link" onclick="showSection('reports')">Reports</div>
         <div class="nav-link" onclick="showSection('profile')">Profile</div>
+        <div class="nav-link" onclick="showSection('loanRequests')">Loan Requests</div>
+
         <!-- <div class="nav-link" onclick="showSection('trust')">Trust Score</div> -->
     </div>
 
     <div class="main-content">
         <!-- Dashboard Section -->
         <div id="dashboard" class="section active">
-            <h2>Welcome Back, Lender</h2>
+            <h2>Welcome Back, {{ user_data['name'] }}</h2>
             <div class="cards">
                 <div class="card">
                     <h3>Wallet Balance</h3>
-                    <p>Rs.2000</p>
+                    <p>₹ {{ user_data['wallet_balance'] }}</p>
                 </div>
                 <div class="card">
                     <h3>Currently Lent</h3>
-                    <p>Rs.3000</p>
+                    <p>₹ 0</p>
                 </div>
                 <div class="card">
                     <h3>Expected Returns</h3>
-                    <p>Rs.7,200</p>
+                    <p>₹ 0</p>
                 </div>
                 <div class="card">
                     <h3>Active Loans</h3>
-                    <p>5</p>
+                    <p>0</p>
                 </div>
             </div>
         </div>
@@ -197,10 +53,22 @@
         </div>
 
         <!-- Wallet -->
-        <div id="wallet" class="section">
-            <h2>Wallet</h2>
-            <p>Withdraw or deposit funds securely.</p>
-        </div>
+        <!-- Wallet -->
+<div id="wallet" class="section">
+  <h1>Wallet</h1>
+  <br><br>
+  <h2>Withdraw or deposit funds securely.</h2>
+  <br><br>
+  <h3>Dear, {{ user_data['name'] }}</h3>
+  <br><br>
+  <h4>Your Current Balance: ₹ {{ user_data['wallet_balance'] }}</h4>
+  <br><br>
+
+  <input type="number" required placeholder="Enter Money" name="money" id="money">
+  <button type="submit" class="btn" onclick="payNow()">Add Money</button>
+  <button type="button" class="btn">Withdraw Money</button>
+</div>
+
 
         <!-- Investments -->
         <div id="investments" class="section">
@@ -208,64 +76,61 @@
             <p>Explore and invest in new borrower requests.</p>
         </div>
 
-        <!-- Reports -->
-        <div id="reports" class="section">
-            <h2>Reports</h2>
-            <p>Download your earnings and transaction reports here.</p>
-        </div>
-
         <!-- Profile -->
         <div id="profile" class="section">
             <h2>Profile</h2>
             <p>Update your personal information and bank details.</p>
         </div>
+        <!-- Loan Requests -->
+        <div id="loanRequests" class="section">
+            <h2>Loan Requests</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                        <th>Status</th>
+                        <th>Chat</th>
+                    </tr>
+                </thead>
+                <tbody>
+              {% if user_data.get('req_id')  %}
+                    <tr id="row-{{ user_data['req_id'] }}">
+                      <td>{{ user_data.get('req_id') }}</td>
+                      <td>{{ user_data.get('amount') }}</td>
+                      <td>
+                        <button class="approve" onclick="replace()">Approve</button>
+                        <button class="reject" onclick="updateStatus('REQ124', 'Rejected')">Reject</button>
+                    </td>
+                    <td id="status-{{user_data.get('req_id')}}">Pending</td>
+                    <td><button class="chat-btn" onclick="openChat('REQ124')">Chat</button></td>
+                    </tr>
+                
+                    {% endif %}    
 
-        <!-- Trust Score -->
-        <!-- <div id="trust" class="section">
-      <h2>Trust Score</h2>
-      <div class="card" style="max-width: 300px;">
-        <h3>Current Trust Score</h3>
-        <p>87 / 100</p>
-      </div>
-
-      <div class="score-history">
-        <h3>Score Change History</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Action</th>
-              <th>Reason</th>
-              <th>Change</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>2025-04-03</td>
-              <td>Added</td>
-              <td>On-time repayment</td>
-              <td>+5</td>
-            </tr>
-            <tr>
-              <td>2025-03-20</td>
-              <td>Subtracted</td>
-              <td>Missed KYC update</td>
-              <td>-3</td>
-            </tr>
-            <tr>
-              <td>2025-03-01</td>
-              <td>Added</td>
-              <td>Consistent activity</td>
-              <td>+2</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div> -->
+                </tbody>
+            </table>
+        </div>
 
     </div>
-
+    <div id="chatModal" class="chat-modal" style="display: none;">
+      <div class="chat-box">
+          <div class="chat-header">
+              <span id="chatTitle">Chat</span>
+              <span class="close-chat" onclick="closeChat()">×</span>
+          </div>
+          <div id="chatMessages" class="chat-messages"></div>
+          <div class="chat-input">
+              <input type="text" id="chatInput" placeholder="Type your message..." />
+              <button onclick="sendMessage()">Send</button>
+          </div>
+      </div>
+  </div>
     <script>
+      function replace() {
+        window.location.href="/completed-everything"
+      }
         function showSection(id) {
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
@@ -278,8 +143,116 @@
             document.getElementById(id).classList.add('active');
             event.target.classList.add('active');
         }
-    </script>
 
+        function approveRequest(id) {
+            alert("✅ Approved loan request: " + id);
+        }
+
+        function rejectRequest(id) {
+            alert("❌ Rejected loan request: " + id);
+        }
+        function updateStatus(id, status) {
+  const statusCell = document.getElementById('status-' + id);
+  statusCell.textContent = status;
+
+  if (status === 'Approved') {
+    statusCell.style.color = '#10b981'; // green
+    
+  } else if (status === 'Rejected') {
+    statusCell.style.color = '#ef4444'; // red
+  }
+
+  alert(`${status} loan request: ${id}`);
+}
+    </script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+async function payNow() {
+    const amountInput = document.getElementById("money").value;
+    const amount = parseInt(amountInput);
+    if (!amount || amount < 1) {
+        alert("Enter a valid amount");
+        return;
+    }
+
+    const response = await fetch('/create_order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: amount })
+    });
+
+    const data = await response.json();
+
+    const options = {
+        key: data.key,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Decentralized Loan Network",
+        description: "Add money to wallet",
+        order_id: data.order_id,
+        callback_url: "/lender/lender-dashboard/payment-completed",
+        theme: {
+            color: "#10b981"
+        }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+    function openChat(requestId) {
+      currentChatId = requestId;
+      document.getElementById('chatTitle').innerText = `Chat - ${requestId}`;
+      document.getElementById('chatMessages').innerHTML = '';
+
+      // Load chat history
+      const messages = chatHistory[requestId] || [];
+      messages.forEach(msg => {
+          const messageBox = document.createElement('div');
+          messageBox.className = `chat-message ${msg.sender}`;
+          messageBox.textContent = msg.text;
+          document.getElementById('chatMessages').appendChild(messageBox);
+      });
+
+      document.getElementById('chatModal').style.display = 'flex';
+  }
+
+  function closeChat() {
+      document.getElementById('chatModal').style.display = 'none';
+  }
+
+  function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      // Store in chat history
+      if (!chatHistory[currentChatId]) {
+          chatHistory[currentChatId] = [];
+      }
+      chatHistory[currentChatId].push({ sender: 'sender', text: `You: ${message}` });
+
+      // Append message to UI
+      const messageBox = document.createElement('div');
+      messageBox.className = 'chat-message sender';
+      messageBox.textContent = `You: ${message}`;
+      document.getElementById('chatMessages').appendChild(messageBox);
+
+      // Auto reply (mock)
+      setTimeout(() => {
+          const replyText = `Borrower: Got it! (ref: ${currentChatId})`;
+          chatHistory[currentChatId].push({ sender: 'receiver', text: replyText });
+
+          const reply = document.createElement('div');
+          reply.className = 'chat-message receiver';
+          reply.textContent = replyText;
+          document.getElementById('chatMessages').appendChild(reply);
+          document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+      }, 1000);
+
+      input.value = '';
+      document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+  }
+}
+</script>
 </body>
 
 </html>

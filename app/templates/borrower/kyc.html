@@ -32,22 +32,22 @@
 
                         <div class="input-box">
                             <span class="icon"><ion-icon name="call-outline"></ion-icon></span>
-                            <input type="text" name="username" required />
-                            <label>Ph.No</label>
+                            <input type="text" name="phone_no" required />
+                            <label>Phone Number</label>
                         </div>
 
                         <label for="dob" style="color: white;">Date of Birth :</label>
-                        <input type="date" id="dob" name="dob">
+                        <input type="date" id="dob" name="dob" required>
 
                         <div class="input-box">
                             <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
-                            <input type="text" name="username" required />
+                            <input type="text" name="aadhar_no" required />
                             <label>Aadhar No.</label>
                         </div>
 
 
-                        <label for="idproof" style="color: white;">Upload ID Proof</label>
-                        <input type="file" id="idproof" name="idproof" accept=".jpg, .png, .pdf" required>
+                        <label for="idproof" style="color: white;">Upload ID Proof (Optional) </label>
+                        <input type="file" id="idproof" name="idproof" accept=".jpg, .png, .pdf" >
                         <br>
                         <br>
 
@@ -57,8 +57,10 @@
                         <br>
 
                         <button type="submit" id="loginForm" class="btn" onclick="">Submit</button>
-
                     </form>
+                    {% for message in flashed_messages() %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -79,7 +81,7 @@
             );
         } else {
             document.getElementById("locationDisplay").innerText =
-                "Geolocation is not supported by this browser.";
+                "Geolocation is not supported by this browser. Please Use Supported Browser";
         }
     }
 

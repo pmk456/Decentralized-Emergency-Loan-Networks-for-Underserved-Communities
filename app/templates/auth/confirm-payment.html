@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm</title>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="stylesheet" href="/static/css/lender-dashboard.css">
+    
+</head>
+<body>
+    <button id="payment-btn" class="btn">Confirm</button>
+    <script>
+        var options = {
+            "key": "rzp_test_DG2hG9ikul7Let",
+            "amount": "{{money}}", 
+            "name": "TruePay",
+            "description": "Test Transaction",
+            "image": "static/images/alliance-logo.png",
+            "order_id": "{{order_id}}",
+            "callback_url": "/lender/lender-dashboard/add-balance",
+            "theme": {
+                "color": "#3399cc"
+            }
+          };
+          var rzp1 = new Razorpay(options);
+          document.getElementById('payment-btn').onclick = function(e) {
+            rzp1.open();
+            e.preventDefault();
+          }
+    </script>    
+</body>
+</html>
