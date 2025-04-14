@@ -59,6 +59,7 @@ class Communities(db.Model):
     community_id = db.Column(db.String(10), primary_key=True)
     community_name = db.Column(db.String(50))
     community_leader = db.Column(db.String(50))
-    
+
+
 if __name__ == "__main__":
     db.create_all()
