@@ -23,17 +23,3 @@ def create_app():
     app.register_blueprint(lender_routes)
     app.register_blueprint(whatsapp_routes)
     return app
-
-
-
-"""
-
-insert_data = {
-    "loan_id": 42,
-    "action": "payment_received",
-    "amount": 1000.0,
-    "hash": "abc123hash456"
-}
-
-response = update_ledger(insert_data, delete_entry_id=7)
-print(response)"""
