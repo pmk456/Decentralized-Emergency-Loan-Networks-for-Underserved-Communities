@@ -25,4 +25,3 @@ class Payment:
             return True
         except razorpay.errors.SignatureVerificationError:
             return False
-    
