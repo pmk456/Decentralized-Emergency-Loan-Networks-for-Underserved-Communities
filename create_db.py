@@ -4,8 +4,3 @@ app = create_app()
 with app.app_context() as context:
     db.create_all()
     db.session.commit()
-
-
-
-
-
